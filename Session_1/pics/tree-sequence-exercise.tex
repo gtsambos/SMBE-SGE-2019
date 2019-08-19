@@ -1,0 +1,85 @@
+
+
+% Set up the document
+\documentclass[convert]{standalone}
+
+% Include any extra LaTeX packages required
+%\usepackage[square, numbers, comma, sort&compress]{natbib}  % Use the "Natbib" style for the references in the Bibliography
+
+\usepackage{verbatim}  % Needed for the "comment" environment to make LaTeX comments
+
+
+\usepackage{tabularx,booktabs,adjustbox} % For tables
+\usepackage{pdflscape} % For writing some pages in landscape mode
+\usepackage{afterpage} % For control over the positioning of figures and tables.
+
+% For pictures
+\usepackage{tikz}
+\usetikzlibrary{calc,fit,arrows,decorations.pathmorphing,backgrounds,fit,positioning}
+\usetikzlibrary{shapes.symbols}
+
+% tikz colour settings
+\tikzset{pop1/.style={blue!40},pop2/.style={red!40}}
+
+%% ----------------------------------------------------------------
+\begin{document}
+\begin{tikzpicture}[node distance=2.5mm and 2.5mm,scale=.7]
+
+\tikzset{greynode/.style={font=\footnotesize,node distance=1cm and 1 cm,fill=black!10,draw=black!30,inner sep=0pt,minimum size=3.5mm,shape=circle},
+mutations/.style={shape=starburst,fill=red!50!blue,inner sep=0.8pt,starburst points=11,starburst point height=.2cm}}
+
+% sample nodes
+\node (s4) [greynode] {4};
+\node (s0) [right=of s4,greynode] {0};
+\node (s1) [right=of s0,greynode] {1};
+\node (s2) [right=of s1,greynode] {2};
+\node (s3) [right=of s2,greynode] {3};
+
+% Right sample nodes
+\node (rightTree) at (5, 0) {};
+\node [greynode] (s0r) at ($(s0) + (rightTree)$) {0};
+\node [greynode] (s1r) at ($(s1) + (rightTree)$) {1};
+\node [greynode] (s2r) at ($(s2) + (rightTree)$) {2};
+\node [greynode] (s3r) at ($(s3) + (rightTree)$) {3};
+\node [greynode] (s4r) at ($(s4) + (rightTree)$) {4};
+
+% Non-sample nodes
+\node[greynode] (s5) at ($0.5*(s0) + 0.5*(s1) + (0,1)$) {5};
+\node[greynode] (s5r) at ($(s5) + (rightTree)$) {5};
+\node[greynode] (s6) at ($0.5*(s2) + 0.5*(s3) + (0,1.5)$) {6};
+\node[greynode] (s6r) at ($(s6) + (rightTree)$) {6};
+\node[greynode] (s7) at ($0.5*(s4) + 0.5*(s1) + (0,2)$) {7};
+\node[greynode] (s8r) at ($0.5*(s0r) + 0.5*(s3r) + (0,3)$) {8};
+\node[greynode] (s9) at ($.5*(s4) + .5*(s3) + (0,3.5)$) {9};
+\node[greynode] (s10r) at ($.5*(s4r)+.5*(s3r)+(0,4)$) {10};
+
+% Edges 
+\draw (s0) -- (s5) -- (s1); \draw (s0r) -- (s5r) -- (s1r);
+\draw (s2) -- (s6) -- (s3); \draw (s2r) -- (s6r) -- (s3r);
+\draw (s4) -- (s7) -- (s5);
+\draw (s5r) -- (s8r) -- (s6r);
+\draw (s7) -- (s9) -- (s6);
+\draw (s4r) -- (s10r) -- (s8r);
+
+% Axes
+\node[inner sep=0] (leftAx) at (-1,0) {};
+\draw[very thick] (leftAx) -- +(0, 5);
+\foreach \y in {0, 1, 2, 3, 4, 5} \draw ($(leftAx) + (-0.1, \y)$) -- ($(leftAx) + (0.1, \y)$); % tick marks
+\draw[very thick] ($(s4) + (0,5.5)$) -- ($(s3r) + (0,5.5)$);
+\node (topAx) at (0,5.5) {};
+\node (topLeft) at ($(s4) + (0,5.5)$) {};
+\node (genUnit) at ($0.1*(s3r) - 0.1*(s4)$) {};
+\foreach \x in {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10} \draw ($(topLeft) + \x*(genUnit) + (0,0.1)$) -- +(0, -0.2); % tick marks
+\node[anchor=east] at ($(leftAx)$) {0}; \node[anchor=east] at ($(leftAx) + (0,5)$) {5};
+\node[anchor=south] at ($(topLeft)$) {0}; \node[anchor=south] at ($(topLeft) + 5*(genUnit)$) {5}; \node[anchor=south] at ($(topLeft) + 10*(genUnit)$) {10};
+
+% Interval endpoints
+\draw[thin,color=black!50,dashed] ($(topLeft) + 5*(genUnit)$) -- +(0, -5.5);
+
+%% Axis titles
+\node (topLabel) at ($(topLeft) + 5*(genUnit) + (0,1)$) {$\textrm{Chromosomal coordinates}$};
+\node[rotate=90,anchor=south] (leftLabel) at ($(leftAx) + (-0.3,2.5)$) {$\textrm{Time}$};
+
+\end{tikzpicture}
+\end{document}  % The End
+%% ----------------------------------------------------------------
